@@ -1,12 +1,24 @@
 import MyForm from 'components/MyForm/MyForm';
-import { Component } from 'react';
+
 import { nanoid } from 'nanoid';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
+import { useEffect, useState } from 'react';
+import React from 'react';
 
-export class App extends Component {
-  constructor(props) {
-    super(props);
+export const App = () => {
+  const [contacts, setContacts] = useState([
+    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+  ]);
+  const [filterKey, setFilterKey] = useState('');
+  const [values, setValues] = useState({
+    name: '',
+    number: '',
+  });
+  /*
     this.state = {
       contacts: [
         { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
@@ -16,110 +28,95 @@ export class App extends Component {
       ],
       filterKey: '',
     };
-  }
+  */
 
-  handleChangeName = evt => {
-    evt.preventDefault();
-
-    this.setState({
-      name: evt.target.value,
-    });
+  const handleChangeName = e => {
+    setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  handleChangeNumber = evt => {
-    evt.preventDefault();
-
-    this.setState({
-      number: evt.target.value,
-    });
+  const handleChangeNumber = e => {
+    setValues({ ...values, [e.target.number]: e.target.value });
   };
 
-  handleSubmit = evt => {
+  const handleSubmit = evt => {
     evt.preventDefault();
 
     const form = evt.currentTarget;
-    const name = this.state.name;
-    const number = this.state.number;
-    const islnArray = this.state.contacts.find(
-      contact => contact.name === name
-    );
+    const name = contacts.name;
+    const number = contacts.number;
+    const islnArray = contacts.find(contact => contact.name === name);
     if (islnArray) {
       alert(`${name} is already in contacts`);
       return;
     } else {
-      this.setState(prevState => ({
+      setContacts({
         contacts: [
-          ...prevState.contacts,
+          ...contacts,
           {
             name: name,
             id: nanoid(),
             number: number,
           },
         ],
-      }));
+      });
     }
 
     form.reset();
   };
 
-  handleInput = evt => {
-    this.setState({
+  const handleInput = evt => {
+    setFilterKey({
       filterKey: evt.target.value,
     });
   };
 
-  getFilteredContacts = () => {
-    if (this.state.filterKey) {
-      return this.state.contacts.filter(con =>
-        con.name.toLowerCase().includes(this.state.filterKey)
-      );
+  const getFilteredContacts = () => {
+    if (filterKey) {
+      return contacts.filter(con => con.name.toLowerCase().includes(filterKey));
     }
-    return this.state.contacts;
+    return contacts;
   };
 
-  deleteFunction = id => {
-    const newFilteredContacts = this.state.contacts.filter(
-      contact => contact.id !== id
-    );
-    this.setState({
+  const deleteFunction = id => {
+    const newFilteredContacts = contacts.filter(contact => contact.id !== id);
+    setContacts({
       contacts: newFilteredContacts,
     });
   };
 
-  componentDidMount() {
+  useEffect(() => {
     try {
       const json = localStorage.getItem('contacts');
       const contacts = JSON.parse(json);
 
       if (contacts) {
-        this.setState({ contacts });
+        setContacts({ contacts });
       }
     } catch (error) {}
-  }
-  componentDidUpdate(_, prevState) {
-    if (prevState.contacts.length !== this.state.contacts.length) {
-      const json = JSON.stringify(this.state.contacts);
+  }, []);
+  useEffect(() => {
+    if (contacts.length !== contacts.length) {
+      const json = JSON.stringify(contacts);
       localStorage.setItem('contacts', json);
     }
-  }
+  });
 
-  render() {
-    return (
-      <div>
-        <h1> Phonebook</h1>
-        <MyForm
-          state={this.state}
-          handleSubmit={this.handleSubmit}
-          handleChangeName={this.handleChangeName}
-          handleChangeNumber={this.handleChangeNumber}
-        />
-        <h2> Contacts</h2>
-        <Filter handleInput={this.handleInput} />
-        <ContactList
-          getFilteredContacts={this.getFilteredContacts}
-          deleteFunction={this.deleteFunction}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <h1> Phonebook</h1>
+      <MyForm
+        name={values.name}
+        number={values.number}
+        handleSubmit={handleSubmit}
+        handleChangeName={handleChangeName}
+        handleChangeNumber={handleChangeNumber}
+      />
+      <h2> Contacts</h2>
+      <Filter handleInput={handleInput} />
+      <ContactList
+        getFilteredContacts={getFilteredContacts}
+        deleteFunction={deleteFunction}
+      />
+    </div>
+  );
+};

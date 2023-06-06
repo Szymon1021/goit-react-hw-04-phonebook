@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 import styles from './ContactList.module.css';
 
-export const ContactList = ({ getFilteredContacts, deleteFunction }) => {
+export const ContactList = props => {
+  const { getFilteredContacts, deleteFunction } = props;
   const valuesList = getFilteredContacts().map(input => {
     return (
       <li className={styles.contactlist} key={nanoid()}>
