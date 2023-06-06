@@ -18,6 +18,7 @@ export const App = () => {
     name: '',
     number: '',
   });
+  const [filteredContacts, setFilteredContacts] = useState([]);
   /*
     this.state = {
       contacts: [
@@ -70,12 +71,12 @@ export const App = () => {
     });
   };
 
-  const getFilteredContacts = () => {
-    if (filterKey) {
-      return contacts.filter(con => con.name.toLowerCase().includes(filterKey));
-    }
-    return contacts;
-  };
+  useEffect(() => {
+    const newContacts = contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filterKey)
+    );
+    setFilteredContacts(newContacts);
+  }, [contacts, filterKey]);
 
   const deleteFunction = id => {
     const newFilteredContacts = contacts.filter(contact => contact.id !== id);
@@ -94,12 +95,13 @@ export const App = () => {
       }
     } catch (error) {}
   }, []);
-  useEffect(prevState => {
-    if (prevState.contacts.length !== contacts.length) {
+
+  useEffect(() => {
+    if (!contacts.length) {
       const json = JSON.stringify(contacts);
       localStorage.setItem('contacts', json);
     }
-  });
+  }, [contacts]);
 
   return (
     <div>
@@ -114,8 +116,7 @@ export const App = () => {
       <h2> Contacts</h2>
       <Filter handleInput={handleInput} />
       <ContactList
-        contacts={contacts}
-        getFilteredContacts={getFilteredContacts}
+        contacts={filteredContacts}
         deleteFunction={deleteFunction}
       />
     </div>
