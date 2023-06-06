@@ -94,8 +94,8 @@ export const App = () => {
       }
     } catch (error) {}
   }, []);
-  useEffect(() => {
-    if (contacts.length !== contacts.length) {
+  useEffect(prevState => {
+    if (prevState.contacts.length !== contacts.length) {
       const json = JSON.stringify(contacts);
       localStorage.setItem('contacts', json);
     }
@@ -114,6 +114,7 @@ export const App = () => {
       <h2> Contacts</h2>
       <Filter handleInput={handleInput} />
       <ContactList
+        contacts={contacts}
         getFilteredContacts={getFilteredContacts}
         deleteFunction={deleteFunction}
       />

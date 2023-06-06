@@ -3,8 +3,8 @@ import { nanoid } from 'nanoid';
 import styles from './ContactList.module.css';
 
 export const ContactList = props => {
-  const { getFilteredContacts, deleteFunction } = props;
-  const valuesList = getFilteredContacts().map(input => {
+  const { getFilteredContacts, deleteFunction, contacts } = props;
+  const valuesList = getFilteredContacts(contacts).map(input => {
     return (
       <li className={styles.contactlist} key={nanoid()}>
         {input.name}: {input.number}
