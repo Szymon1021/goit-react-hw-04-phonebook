@@ -18,69 +18,56 @@ export const App = () => {
     name: '',
     number: '',
   });
+  const [filteredContacts, setFilteredContacts] = useState([]);
 
-  const handleChangeName = e => {
+  useEffect(() => {
+    const storedContacts = localStorage.getItem('contacts');
+    if (storedContacts) {
+      setContacts(JSON.parse(storedContacts));
+    }
+  }, []);
+
+  useEffect(() => {
+    const newContacts = contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filterKey)
+    );
+    setFilteredContacts(newContacts);
+  }, [contacts, filterKey]);
+
+  const handleChange = e => {
     setValues({ ...values, [e.target.name]: e.target.value });
-  };
-
-  const handleChangeNumber = e => {
-    setValues({ ...values, [e.target.number]: e.target.value });
   };
 
   const handleSubmit = evt => {
     evt.preventDefault();
 
-    const form = evt.currentTarget;
-    const name = contacts.name;
-    const number = contacts.number;
-    const islnArray = contacts.find(contact => contact.name === name);
+    const islnArray = contacts.find(
+      contact => contact.name.toLowerCase() === values.name.toLowerCase()
+    );
     if (islnArray) {
-      alert(`${name} is already in contacts`);
-      return;
+      alert(`"${values.name}" in already in contacts.`);
     } else {
-      setContacts({
-        contacts: [
-          ...contacts,
-          {
-            name: name,
-            id: nanoid(),
-            number: number,
-          },
-        ],
+      const newContact = {
+        id: nanoid(),
+        name: values.name,
+        number: values.number,
+      };
+      setContacts([...contacts, newContact]);
+      setValues({
+        name: '',
+        number: '',
       });
     }
-
-    form.reset();
   };
 
   const handleInput = evt => {
-    setFilterKey({
-      filterKey: evt.target.value,
-    });
-  };
-
-  const getFilteredContacts = () => {
-    if (filterKey) {
-      return contacts.filter(con => con.name.toLowerCase().includes(filterKey));
-    }
-    return contacts;
+    setFilterKey(evt.target.value);
   };
 
   const deleteFunction = id => {
     const newFilteredContacts = contacts.filter(contact => contact.id !== id);
     setContacts(newFilteredContacts);
   };
-
-  useEffect(() => {
-    try {
-      const json = localStorage.getItem('contacts');
-      const contacts = JSON.parse(json);
-
-      if ({ contacts }) {
-        setContacts({ contacts });
-      }
-    } catch (error) {}
-  }, []);
 
   useEffect(() => {
     if (!contacts.length) {
@@ -93,14 +80,15 @@ export const App = () => {
     <div>
       <h1> Phonebook</h1>
       <MyForm
+        name={values.name}
+        number={values.number}
         handleSubmit={handleSubmit}
-        handleChangeName={handleChangeName}
-        handleChangeNumber={handleChangeNumber}
+        handleChange={handleChange}
       />
       <h2> Contacts</h2>
       <Filter handleInput={handleInput} />
       <ContactList
-        getFilteredContacts={getFilteredContacts}
+        contacts={filteredContacts}
         deleteFunction={deleteFunction}
       />
     </div>
