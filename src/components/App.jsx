@@ -21,10 +21,14 @@ export const App = () => {
   const [filteredContacts, setFilteredContacts] = useState([]);
 
   useEffect(() => {
-    const storedContacts = localStorage.getItem('contacts');
-    if (storedContacts) {
-      setContacts(JSON.parse(storedContacts));
-    }
+    try {
+      const json = localStorage.getItem('contacts');
+      const contacts = JSON.parse(json);
+
+      if (contacts) {
+        setContacts(contacts);
+      }
+    } catch (error) {}
   }, []);
 
   useEffect(() => {
@@ -40,7 +44,7 @@ export const App = () => {
 
   const handleSubmit = evt => {
     evt.preventDefault();
-
+    const form = evt.currentTarget;
     const islnArray = contacts.find(
       contact => contact.name.toLowerCase() === values.name.toLowerCase()
     );
@@ -58,6 +62,7 @@ export const App = () => {
         number: '',
       });
     }
+    form.reset();
   };
 
   const handleInput = evt => {
