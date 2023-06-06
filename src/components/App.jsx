@@ -18,18 +18,6 @@ export const App = () => {
     name: '',
     number: '',
   });
-  const [filteredContacts, setFilteredContacts] = useState([]);
-  /*
-    this.state = {
-      contacts: [
-        { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-        { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-        { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-        { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-      ],
-      filterKey: '',
-    };
-  */
 
   const handleChangeName = e => {
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -71,18 +59,16 @@ export const App = () => {
     });
   };
 
-  useEffect(() => {
-    const newContacts = contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filterKey)
-    );
-    setFilteredContacts(newContacts);
-  }, [contacts, filterKey]);
+  const getFilteredContacts = () => {
+    if (filterKey) {
+      return contacts.filter(con => con.name.toLowerCase().includes(filterKey));
+    }
+    return contacts;
+  };
 
   const deleteFunction = id => {
     const newFilteredContacts = contacts.filter(contact => contact.id !== id);
-    setContacts({
-      contacts: newFilteredContacts,
-    });
+    setContacts(newFilteredContacts);
   };
 
   useEffect(() => {
@@ -90,7 +76,7 @@ export const App = () => {
       const json = localStorage.getItem('contacts');
       const contacts = JSON.parse(json);
 
-      if (contacts) {
+      if ({ contacts }) {
         setContacts({ contacts });
       }
     } catch (error) {}
@@ -107,8 +93,6 @@ export const App = () => {
     <div>
       <h1> Phonebook</h1>
       <MyForm
-        name={values.name}
-        number={values.number}
         handleSubmit={handleSubmit}
         handleChangeName={handleChangeName}
         handleChangeNumber={handleChangeNumber}
@@ -116,7 +100,7 @@ export const App = () => {
       <h2> Contacts</h2>
       <Filter handleInput={handleInput} />
       <ContactList
-        contacts={filteredContacts}
+        getFilteredContacts={getFilteredContacts}
         deleteFunction={deleteFunction}
       />
     </div>
