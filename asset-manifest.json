@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Szymon1021.github.io/goit-react-hw-04-phonebook/static/css/main.b2f2d121.css",
+    "main.js": "/Szymon1021.github.io/goit-react-hw-04-phonebook/static/js/main.7ceb145e.js",
+    "index.html": "/Szymon1021.github.io/goit-react-hw-04-phonebook/index.html",
+    "main.b2f2d121.css.map": "/Szymon1021.github.io/goit-react-hw-04-phonebook/static/css/main.b2f2d121.css.map",
+    "main.7ceb145e.js.map": "/Szymon1021.github.io/goit-react-hw-04-phonebook/static/js/main.7ceb145e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b2f2d121.css",
+    "static/js/main.7ceb145e.js"
+  ]
+}
