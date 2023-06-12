@@ -75,10 +75,8 @@ export const App = () => {
   };
 
   useEffect(() => {
-    if (!contacts.length) {
-      const json = JSON.stringify(contacts);
-      localStorage.setItem('contacts', json);
-    }
+    const json = JSON.stringify(contacts);
+    localStorage.setItem('contacts', json);
   }, [contacts]);
 
   return (
